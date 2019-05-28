@@ -1,0 +1,2 @@
+﻿SDL2main.lib(SDL_windows_main.obj) : error LNK2019: unresolved external symbol _SDL_main referenced in function _main_utf8
+E:\George Brown\Production\Cat and Mouse\Debug\Cat and Mouse.exe : fatal error LNK1120: 1 unresolved externals
