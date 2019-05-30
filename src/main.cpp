@@ -1,12 +1,11 @@
 #include <SDL.h>
 #include "Game.h"
 #include <iostream>
-//#include <Windows.h>
-
+#include <Windows.h>
 
 int main(int argc, char* argv[]) {
-	//AllocConsole();
-	//freopen("CON", "w", stdout);
+	AllocConsole();
+	freopen("CON", "w", stdout);
 
 	Game* game = Game::GetInstance();
 	//increase of X,Y by 320 for border

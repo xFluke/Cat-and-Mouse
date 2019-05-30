@@ -1,9 +1,3 @@
-﻿  Cat.cpp
-  Game.cpp
-c:\users\tech\desktop\good version\cat and mouse\src\game.cpp(99): warning C4805: '==': unsafe mix of type 'const Uint8' and type 'bool' in operation
-  main.cpp
-  Player.cpp
-  Sprite.cpp
-  Tile.cpp
-  Generating Code...
-  Cat and Mouse.vcxproj -> C:\Users\Tech\Desktop\good version\Cat and Mouse\bin\Debug\Cat and Mouse.exe
+﻿  Game.cpp
+c:\users\101193122\desktop\prototype_cat-an-mouse_may14thbuild here\prototype_cat-an-mouse_may14thbuild\src\game.cpp(109): warning C4805: '==': unsafe mix of type 'const Uint8' and type 'bool' in operation
+  Cat and Mouse.vcxproj -> C:\Users\101193122\Desktop\Prototype_Cat-an-Mouse_May14thBuild HERE\Prototype_Cat-an-Mouse_May14thBuild\bin\Debug\Cat and Mouse.exe

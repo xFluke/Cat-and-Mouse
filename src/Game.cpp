@@ -6,6 +6,7 @@
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 
+
 #define ROWS 31
 #define COLS 31
 
@@ -28,9 +29,9 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 
 				if (IMG_Init(IMG_INIT_PNG) != 0) {
 					// Create pixel maps.
-					SDL_Surface* tileSurface = IMG_Load("Assets/textures/Tiles.png");
-					SDL_Surface* playerSurface = IMG_Load("Assets/textures/mouse.png");
-					SDL_Surface* ghostsSurface = IMG_Load("Assets/textures/Cats.png");
+					SDL_Surface* tileSurface = IMG_Load("../Assets/textures/Tiles.png");
+					SDL_Surface* playerSurface = IMG_Load("../Assets/textures/mouse.png");
+					SDL_Surface* ghostsSurface = IMG_Load("../Assets/textures/Cats.png");
 					m_pTileTexture = SDL_CreateTextureFromSurface(m_pRenderer, tileSurface);
 					m_pPlayerTexture = SDL_CreateTextureFromSurface(m_pRenderer, playerSurface);
 					m_pGhostsTexture = SDL_CreateTextureFromSurface(m_pRenderer, ghostsSurface);
@@ -58,7 +59,11 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 		return false; // SDL init fail
 	}
 	// build background layer
-	std::ifstream bgFile("Assets/bg.txt");
+	std::ifstream bgFile("../Assets/bg.txt");
+	if (!bgFile) {
+		std::cout << "bg file not detected" << std::endl;
+	}
+
 	for (int row = 0; row < ROWS; row++) {
 		for (int col = 0; col < COLS; col++) {
 			char i;
@@ -70,7 +75,12 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 	}
 	bgFile.close();
 	// Build tilemap
-	std::ifstream mapFile("Assets/Level0.txt");
+	
+	std::ifstream mapFile("../Assets/Level0.txt");
+	if (!mapFile) {
+		std::cout << "bg file not detected" << std::endl;
+	}
+
 	for (int row = 0; row < ROWS; row++) {
 		for (int col = 0; col < COLS; col++) {
 			char temp;
