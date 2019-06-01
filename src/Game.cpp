@@ -5,6 +5,9 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
+#include "PowerUp.h"
+#include <random>
+#include <ctime>
 
 
 #define ROWS 31
@@ -92,6 +95,8 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 	}
 	mapFile.close();
 
+	srand(time(0));
+
 	m_iKeyStates = SDL_GetKeyboardState(NULL);
 	// Spawn Player and Ghosts
 	// Starting coordinate: 15, 17
@@ -117,9 +122,12 @@ bool Game::KeyDown(SDL_Scancode c) {
 }
 
 void Game::Update() {
-	PlayerGhostsInteractions();
+	HandlePlayerAbilities();
+	PlayerCatsInteractions();
 	PlayerMovements();
 	CatMovements();
+
+	//std::cout << "Currently In Wall " << m_pPlayer->isCurrentlyInWall() << std::endl;
 	//For debugging purposes
 	/*cout << "Is Moving: " <<  m_pPlayer->isMoving() << endl;
 	cout << "Destination X: " << m_pPlayer->GetDestinationX() << endl;
@@ -128,39 +136,75 @@ void Game::Update() {
 	cout << "Rect Y: " << m_pPlayer->GetDst().y << endl;*/
 }
 
-void Game::PlayerGhostsInteractions() {
-	if (m_pPlayer->isPoweredUp()) {
-		// Player is only powered up for 10 seconds
+void Game::HandlePlayerAbilities()
+{
+	switch (m_pPlayer->GetAbility()) {
+	case Ability::NONE:
+		return;
+		break;
+	case Ability::DEFEAT_CATS:
 		if (SDL_GetTicks() - m_powerUpStartTimer > 10000) {
-			m_pPlayer->SetPowered(false);
+			m_pPlayer->SetAbility(Ability::NONE);
+			std::cout << "Defeat Cats Ability Expired" << std::endl;
+		}
+		break;
+	case Ability::ENTER_WALL:
 
-			// After 10 seconds, return ghosts to their original state
-			for (int i = 0; i < 4; i++) {
-				m_pCats[i]->SetVulnerable(false);
-				if (!m_pCats[i]->isDead()) {
-					m_pCats[i]->SetSrc({ i * 32, 0, 32, 32 });
-				}
+		// Remove ability after one time use
+		if (!m_pPlayer->isMoving() && !m_pPlayer->isCurrentlyInWall()) {
+			if (m_pPlayer->enteredWall()) {
+				m_pPlayer->SetCurrentlyInWall(false);
+				m_pPlayer->SetEnteredWall(false);
+				m_pPlayer->SetAbility(Ability::NONE);
+				std::cout << "Enter Walls Ability Expired" << std::endl;
+			}
+			if (KeyDown(SDL_SCANCODE_RETURN)) {
+				switch (m_pPlayer->GetPlayerAngle()) {
+				case 0: // facing up
+					if (m_level.m_Map[m_pPlayer->GetY() - 1][m_pPlayer->GetX()].isEnterableWall()) {
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 32);
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
+						m_pPlayer->SetMoving(true);
+						m_pPlayer->SetCurrentlyInWall(true);
+						m_pPlayer->SetEnteredWall(true);
+					}
+					break;
+				case 180: // facing down
+					if (m_level.m_Map[m_pPlayer->GetY() + 1][m_pPlayer->GetX()].isEnterableWall()) {
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 32);
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
+						m_pPlayer->SetMoving(true);
+						m_pPlayer->SetCurrentlyInWall(true);
+						m_pPlayer->SetEnteredWall(true);
+					}
+					break;
+				case 90: // facing right
+					if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() + 1].isEnterableWall()) {
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 32);
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
+						m_pPlayer->SetMoving(true);
+						m_pPlayer->SetCurrentlyInWall(true);
+						m_pPlayer->SetEnteredWall(true);
+					}	
+					break;
+				case 270: // facing left
+					if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() - 1].isEnterableWall()) {
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 32);
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
+						m_pPlayer->SetMoving(true);
+						m_pPlayer->SetCurrentlyInWall(true);
+						m_pPlayer->SetEnteredWall(true);
+					}
+					break;
+				}	
 			}
 		}
+		break;
 	}
+}
 
-	// Handles player eating a mystery cheese
-	if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].isPowerUp())
-	{
-		m_pPlayer->SetPowered(true);
-		// Change tile to a normal blank tile with its associated variables
-		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetSrc('B');
-		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetTileVariables('B');
 
-		m_powerUpStartTimer = SDL_GetTicks();
-
-		// Make cats vulnerable
-		for (int i = 0; i < 4; i++)
-		{
-			m_pCats[i]->SetVulnerable(true);
-		}
-	}
-
+void Game::PlayerCatsInteractions() {
 	// Handles player eating a cat
 	for (int i = 0; i < 4; i++) {
 		// If player collides with cat..
@@ -168,7 +212,7 @@ void Game::PlayerGhostsInteractions() {
 			// Destroy cat if powered up
 			if (!m_pCats[i]->isDead())
 			{
-				if (m_pPlayer->isPoweredUp())
+				if (m_pPlayer->GetAbility() == Ability::DEFEAT_CATS)
 				{
 					m_pCats[i]->Die();
 				}
@@ -193,54 +237,90 @@ void Game::PlayerMovements() {
 		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetTileVariables('B');
 	}
 
-
-
-	//player movement input handling
-
-	if (!m_pPlayer->isDead())
+	// Handles player eating a mystery cheese
+	if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].isPowerUp())
 	{
-		if (KeyDown(SDL_SCANCODE_W))
-		{
-			if (!m_level.m_Map[m_pPlayer->GetBottomEdgeTile()-1][m_pPlayer->GetRightEdgeTile()].isObstacle() && 
-				!m_level.m_Map[m_pPlayer->GetBottomEdgeTile() - 1][m_pPlayer->GetLeftEdgeTile()].isObstacle()) //check that the right and left are clear for the character to move up
-			{
+		// Change tile to a normal blank tile with its associated variables
+		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetSrc('B');
+		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetTileVariables('B');
 
-				m_pPlayer->MoveUp();
-			}
-		}
-		else if (KeyDown(SDL_SCANCODE_S)) 
-		{
-			if (!m_level.m_Map[m_pPlayer->GetTopEdgeTile()+ 1][m_pPlayer->GetRightEdgeTile()].isObstacle() && 
-				!m_level.m_Map[m_pPlayer->GetTopEdgeTile() + 1][m_pPlayer->GetLeftEdgeTile()].isObstacle()) //check that the right and left are clear for the character to move down
-			{
-
-				m_pPlayer->MoveDown();
-			}
-		}
-		if (KeyDown(SDL_SCANCODE_A)) 
-		{
-			if (!m_level.m_Map[m_pPlayer->GetBottomEdgeTile()][m_pPlayer->GetRightEdgeTile() - 1].isObstacle() && 
-				!m_level.m_Map[m_pPlayer->GetTopEdgeTile()][m_pPlayer->GetRightEdgeTile() - 1].isObstacle())
-			{
-
-				m_pPlayer->MoveLeft();
-			}
-		}
-		else if (KeyDown(SDL_SCANCODE_D))
-		{
-			if (!m_level.m_Map[m_pPlayer->GetBottomEdgeTile()][m_pPlayer->GetLeftEdgeTile() + 1].isObstacle() &&
-				!m_level.m_Map[m_pPlayer->GetTopEdgeTile()][m_pPlayer->GetLeftEdgeTile() + 1].isObstacle())
-			{
-				
-
-				m_pPlayer->MoveRight();
-			}
-		}
-		else if (KeyDown(SDL_SCANCODE_ESCAPE))
-		{
-			m_bRunning = false;
-		}
+		// Grant player a random ability and start the timer
+		m_powerUpStartTimer = SDL_GetTicks();
+		m_pPlayer->SetAbility(PowerUp::GenerateRandomAbility());
+		std::cout << "Your current ability: " << (m_pPlayer->GetAbility() == DEFEAT_CATS ? "Defeat Cats" : "Enter Walls") << std::endl;
 		
+	}
+
+	//player movement input handling: set the destination for the players
+	if (!m_pPlayer->isDead()) {
+		if (KeyDown(SDL_SCANCODE_W)) {
+			if (!m_pPlayer->isMoving()) {
+				m_pPlayer->SetPlayerAngle(0);
+				if (!m_level.m_Map[m_pPlayer->GetY() - 1][m_pPlayer->GetX()].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 32);
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
+					m_pPlayer->SetMoving(true);
+				}
+			}
+		}
+		else if (KeyDown(SDL_SCANCODE_S)) {
+			if (!m_pPlayer->isMoving()) {
+				m_pPlayer->SetPlayerAngle(180);
+				if (!m_level.m_Map[m_pPlayer->GetY() + 1][m_pPlayer->GetX()].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 32);
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
+					m_pPlayer->SetMoving(true);
+				}
+			}
+		}
+		else if (KeyDown(SDL_SCANCODE_A)) {
+			if (!m_pPlayer->isMoving()) {
+				m_pPlayer->SetPlayerAngle(270);
+				if (!m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() - 1].isObstacle() || m_pPlayer->isCurrentlyInWall())
+				{
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 32);
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
+					m_pPlayer->SetMoving(true);
+				}
+			}
+		}
+		else if (KeyDown(SDL_SCANCODE_D)) {
+			if (!m_pPlayer->isMoving()) {
+				m_pPlayer->SetPlayerAngle(90);
+				if (!m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() + 1].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 32);
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
+					m_pPlayer->SetMoving(true);
+				}
+			}
+		}
+	}
+
+	if (m_pPlayer->isMoving()) {
+		if (m_pPlayer->GetDestinationX() > m_pPlayer->GetDst().x) {
+			m_pPlayer->MoveRight();
+		}
+		else if (m_pPlayer->GetDestinationX() < m_pPlayer->GetDst().x) {
+			m_pPlayer->MoveLeft();
+		}
+		else if (m_pPlayer->GetDestinationY() > m_pPlayer->GetDst().y) {
+			m_pPlayer->MoveDown();
+		}
+		else if (m_pPlayer->GetDestinationY() < m_pPlayer->GetDst().y) {
+			m_pPlayer->MoveUp();
+		}
+		else if (m_pPlayer->GetDestinationX() == m_pPlayer->GetDst().x && m_pPlayer->GetDestinationY() == m_pPlayer->GetDst().y) {
+			m_pPlayer->SetMoving(false);
+
+			if (!m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].isEnterableWall()) {
+				m_pPlayer->SetCurrentlyInWall(false);
+			}
+		}
+	}
+
+	if (KeyDown(SDL_SCANCODE_ESCAPE))
+	{
+		m_bRunning = false;
 	}
 
 	m_pPlayer->animate();

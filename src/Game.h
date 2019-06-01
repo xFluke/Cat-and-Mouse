@@ -44,7 +44,8 @@ public:
 	void Update();
 	void Render();
 	void HandleEvents();
-	void PlayerGhostsInteractions();
+	void HandlePlayerAbilities();
+	void PlayerCatsInteractions();
 	void PlayerMovements();
 	void CatMovements();
 	void Clean();
