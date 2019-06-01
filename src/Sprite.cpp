@@ -15,7 +15,7 @@ SDL_Rect* Sprite::GetDstP() { return &m_rDst; }
 void Sprite::SetSrc(char c) {
 	if (c == 'B' || c == 'i') // Black Tile
 		m_rSrc = {};
-	else if (c == 'A') // Blue Tile
+	else if (c == 'A' || c == 'W') // Blue Tile
 		m_rSrc = { 0,0,32,32 };
 	else if (c == 'O') // Power Up Tile
 		m_rSrc = { 32,0,32,32 };
