@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 
 	Game* game = Game::GetInstance();
 	//increase of X,Y by 320 for border
-	if (game->Init("Cat and Mouse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 992, 992, 0) == false) {
+	if (game->Init("Cat and Mouse", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1472, 1472, 0) == false) {
 		return 1;
 	}
 	while (game->Running()) {

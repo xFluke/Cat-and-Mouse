@@ -5,7 +5,7 @@ Cat::Cat(SDL_Rect s, SDL_Rect d) {
 	m_rDst = d;
 	dir = 'd';
 	angle = 0;
-	center.x = center.y = 16;
+	center.x = center.y = 32;
 }
 
 
@@ -16,9 +16,9 @@ char Cat::getDir() { return dir; }
 
 void Cat::setDir(char d) { dir = d; }
 
-int Cat::GetX() { return m_rDst.x / 32; }
+int Cat::GetX() { return m_rDst.x / 64; }
 
-int Cat::GetY() { return m_rDst.y / 32; }
+int Cat::GetY() { return m_rDst.y / 64; }
 
 int Cat::GetDestinationX() { return m_IDestinationX; }
 
@@ -71,7 +71,7 @@ void Cat::SetVulnerable(bool b)
 	if (b) {
 		m_bIsVulnerable = true;
 		if (!m_bIsDead) {
-			m_rSrc = { 128, 0, 32, 32 };
+			m_rSrc = { 768, 0, 64, 64 };
 		}
 	}
 	else {

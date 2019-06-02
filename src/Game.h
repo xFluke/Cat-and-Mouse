@@ -19,6 +19,7 @@ private:
 	SDL_Renderer* m_pRenderer;
 	
 	SDL_Texture* m_pTileTexture;
+	SDL_Texture* m_pPickupTexture;
 	SDL_Texture* m_pPlayerTexture;
 	SDL_Texture* m_pGhostsTexture;
 

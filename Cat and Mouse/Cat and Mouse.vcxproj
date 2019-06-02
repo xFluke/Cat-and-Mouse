@@ -23,6 +23,7 @@
     <ClInclude Include="..\src\Game.h" />
     <ClInclude Include="..\src\Level.h" />
     <ClInclude Include="..\src\Player.h" />
+    <ClInclude Include="..\src\PowerUp.h" />
     <ClInclude Include="..\src\Sprite.h" />
     <ClInclude Include="..\src\Tile.h" />
   </ItemGroup>
@@ -31,6 +32,7 @@
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Player.cpp" />
+    <ClCompile Include="..\src\PowerUp.cpp" />
     <ClCompile Include="..\src\Sprite.cpp" />
     <ClCompile Include="..\src\Tile.cpp" />
   </ItemGroup>

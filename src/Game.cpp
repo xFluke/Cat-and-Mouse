@@ -10,11 +10,11 @@
 #include <ctime>
 
 
-#define ROWS 31
-#define COLS 31
+#define ROWS 23
+#define COLS 23
 
 Game::Game() {
-	m_fps = (Uint32)round(1 / (long double)FPS * 1000);
+	m_fps = (Uint64)round(1 / (long double)FPS * 1000);
 }
 
 bool Game::Init(const char* title, int xpos, int ypos, int width, int height, int flags) {
@@ -73,7 +73,7 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 			bgFile >> i;
 			m_bg.m_Map[row][col].SetSrc(i);
 			m_bg.m_Map[row][col].SetTileVariables(i);
-			m_bg.m_Map[row][col].SetDst({ 32 * col, 32 * row, 32, 32 });
+			m_bg.m_Map[row][col].SetDst({ 64 * col, 64 * row, 64, 64 });
 		}
 	}
 	bgFile.close();
@@ -90,7 +90,7 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 			mapFile >> temp;
 			m_level.m_Map[row][col].SetSrc(temp);
 			m_level.m_Map[row][col].SetTileVariables(temp);
-			m_level.m_Map[row][col].SetDst({ 32 * col, 32 * row, 32, 32 });
+			m_level.m_Map[row][col].SetDst({ 64 * col, 64 * row, 64, 64 });
 		}
 	}
 	mapFile.close();
@@ -100,11 +100,11 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 	m_iKeyStates = SDL_GetKeyboardState(NULL);
 	// Spawn Player and Ghosts
 	// Starting coordinate: 15, 17
-	m_pPlayer = new Player({ 0, 0, 32, 32 }, { 32 * 15, 32 * 17, 32, 32 });
-	m_pCats[0] = new Cat({ 0, 0, 32, 32 }, { 32 * 14, 32 * 15, 32, 32 });
-	m_pCats[1] = new Cat({ 96, 0, 32, 32 }, { 32 * 15, 32 * 15, 32, 32 });
-	m_pCats[2] = new Cat({ 192, 0, 32, 32 }, { 32 * 16, 32 * 15, 32, 32 });
-	m_pCats[3] = new Cat({ 288, 0, 32, 32 }, { 32 * 10, 32 * 8, 32, 32 });
+	m_pPlayer = new Player({ 0, 0, 64, 64 }, { 64 * 11, 64 * 13, 64, 64 });
+	m_pCats[0] = new Cat({ 0, 0, 64, 64 }, { 64 * 10, 64 * 11, 64, 64 });
+	m_pCats[1] = new Cat({ 192, 0, 64, 64 }, { 64 * 11, 64 * 11, 64, 64 });
+	m_pCats[2] = new Cat({ 384, 0, 64, 64 }, { 64 * 12, 64 * 11, 64, 64 });
+	m_pCats[3] = new Cat({ 576, 0, 64, 64 }, { 64 * 8, 64 * 6, 64, 64 });
 	m_bRunning = true;
 	return true;
 }
@@ -162,7 +162,7 @@ void Game::HandlePlayerAbilities()
 				switch (m_pPlayer->GetPlayerAngle()) {
 				case 0: // facing up
 					if (m_level.m_Map[m_pPlayer->GetY() - 1][m_pPlayer->GetX()].isEnterableWall()) {
-						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 32);
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 64);
 						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
 						m_pPlayer->SetMoving(true);
 						m_pPlayer->SetCurrentlyInWall(true);
@@ -171,7 +171,7 @@ void Game::HandlePlayerAbilities()
 					break;
 				case 180: // facing down
 					if (m_level.m_Map[m_pPlayer->GetY() + 1][m_pPlayer->GetX()].isEnterableWall()) {
-						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 32);
+						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 64);
 						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
 						m_pPlayer->SetMoving(true);
 						m_pPlayer->SetCurrentlyInWall(true);
@@ -180,7 +180,7 @@ void Game::HandlePlayerAbilities()
 					break;
 				case 90: // facing right
 					if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() + 1].isEnterableWall()) {
-						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 32);
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 64);
 						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
 						m_pPlayer->SetMoving(true);
 						m_pPlayer->SetCurrentlyInWall(true);
@@ -189,7 +189,7 @@ void Game::HandlePlayerAbilities()
 					break;
 				case 270: // facing left
 					if (m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() - 1].isEnterableWall()) {
-						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 32);
+						m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 64);
 						m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
 						m_pPlayer->SetMoving(true);
 						m_pPlayer->SetCurrentlyInWall(true);
@@ -257,7 +257,7 @@ void Game::PlayerMovements() {
 			if (!m_pPlayer->isMoving()) {
 				m_pPlayer->SetPlayerAngle(0);
 				if (!m_level.m_Map[m_pPlayer->GetY() - 1][m_pPlayer->GetX()].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
-					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 32);
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y - 64);
 					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
 					m_pPlayer->SetMoving(true);
 				}
@@ -267,7 +267,7 @@ void Game::PlayerMovements() {
 			if (!m_pPlayer->isMoving()) {
 				m_pPlayer->SetPlayerAngle(180);
 				if (!m_level.m_Map[m_pPlayer->GetY() + 1][m_pPlayer->GetX()].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
-					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 32);
+					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y + 64);
 					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x);
 					m_pPlayer->SetMoving(true);
 				}
@@ -278,7 +278,7 @@ void Game::PlayerMovements() {
 				m_pPlayer->SetPlayerAngle(270);
 				if (!m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() - 1].isObstacle() || m_pPlayer->isCurrentlyInWall())
 				{
-					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 32);
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x - 64);
 					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
 					m_pPlayer->SetMoving(true);
 				}
@@ -288,7 +288,7 @@ void Game::PlayerMovements() {
 			if (!m_pPlayer->isMoving()) {
 				m_pPlayer->SetPlayerAngle(90);
 				if (!m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX() + 1].isObstacle() || m_pPlayer->isCurrentlyInWall()) {
-					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 32);
+					m_pPlayer->SetDestinationX(m_pPlayer->GetDst().x + 64);
 					m_pPlayer->SetDestinationY(m_pPlayer->GetDst().y);
 					m_pPlayer->SetMoving(true);
 				}
@@ -388,7 +388,7 @@ void Game::CatMovements()
 		if (m_pCats[CATINDEX]->getDir() == 'w') {
 			// If not an obstacle then sets the new destination square
 			if (!m_level.m_Map[m_pCats[CATINDEX]->GetY() - 1][m_pCats[CATINDEX]->GetX()].isObstacle()) {
-				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y - 32);
+				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y - 64);
 				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x);
 				m_pCats[CATINDEX]->SetMoving(true);
 			}
@@ -410,7 +410,7 @@ void Game::CatMovements()
 		}
 		else if (m_pCats[CATINDEX]->getDir() == 's') {
 			if (!m_level.m_Map[m_pCats[CATINDEX]->GetY() + 1][m_pCats[CATINDEX]->GetX()].isObstacle()) {
-				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y + 32);
+				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y + 64);
 				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x);
 				m_pCats[CATINDEX]->SetMoving(true);
 			}
@@ -433,7 +433,7 @@ void Game::CatMovements()
 		else if (m_pCats[CATINDEX]->getDir() == 'a') {
 			if (!m_level.m_Map[m_pCats[CATINDEX]->GetY()][m_pCats[CATINDEX]->GetX() - 1].isObstacle())
 			{
-				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x - 32);
+				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x - 64);
 				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y);
 				m_pCats[CATINDEX]->SetMoving(true);
 			}
@@ -455,7 +455,7 @@ void Game::CatMovements()
 		}
 		else if (m_pCats[CATINDEX]->getDir() == 'd') {
 			if (!m_level.m_Map[m_pCats[CATINDEX]->GetY()][m_pCats[CATINDEX]->GetX() + 1].isObstacle()) {
-				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x + 32);
+				m_pCats[CATINDEX]->SetDestinationX(m_pCats[CATINDEX]->GetDst().x + 64);
 				m_pCats[CATINDEX]->SetDestinationY(m_pCats[CATINDEX]->GetDst().y);
 				m_pCats[CATINDEX]->SetMoving(true);
 			}

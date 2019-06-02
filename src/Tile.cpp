@@ -23,7 +23,28 @@ void Tile::SetTileVariables(char c) {
 		m_bIsIntersection = false;
 		m_bIsEnterableWall = false;
 	}
-	else if (c == 'A') { // brick tile
+	else if (c == 'A' ) { // brick tile
+		m_bIsObstacle = true;
+		m_bIsPoint = false;
+		m_bIsPowerUp = false;
+		m_bIsIntersection = false;
+		m_bIsEnterableWall = false;
+	}
+	else if (c == 'H') { // brick tile
+		m_bIsObstacle = true;
+		m_bIsPoint = false;
+		m_bIsPowerUp = false;
+		m_bIsIntersection = false;
+		m_bIsEnterableWall = false;
+	}
+	else if (c == '1'|| c == '2'|| c == '3' || c == '4') { // roof tiles
+		m_bIsObstacle = true;
+		m_bIsPoint = false;
+		m_bIsPowerUp = false;
+		m_bIsIntersection = false;
+		m_bIsEnterableWall = false;
+	}
+	else if (c == '!' || c == '@' || c == '#' || c == '$'|| c == '%' || c == '^' || c == '&' || c == '*') { // corner tiles
 		m_bIsObstacle = true;
 		m_bIsPoint = false;
 		m_bIsPowerUp = false;
@@ -58,6 +79,7 @@ void Tile::SetTileVariables(char c) {
 		m_bIsIntersection = true;
 		m_bIsEnterableWall = false;
 	}
+	/*
 	else if(c=='d') // default indoor tile
 	{
 		m_bIsObstacle = true;
@@ -69,6 +91,7 @@ void Tile::SetTileVariables(char c) {
 		m_rSrc.y = 0;
 		m_rSrc.w = m_rSrc.h = 32;
 	}
+	*/
 	else if (c == 'W') {
 		m_bIsObstacle = true;
 		m_bIsPoint = false;

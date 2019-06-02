@@ -5,7 +5,7 @@
 class Level 
 {
 public:
-	Tile m_Map[31][31];
+	Tile m_Map[23][23];
 
 	Level() {}
 };
