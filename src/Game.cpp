@@ -582,6 +582,12 @@ void Game::Render() {
 	SDL_RenderCopy(m_pRenderer, m_pTextTextureLevel, NULL, &m_textRectLevel);
 	SDL_RenderCopy(m_pRenderer, m_pTextTextureScore, NULL, &m_textRectScore);
 
+
+	SDL_DestroyTexture(m_pTextTextureLives);
+	SDL_DestroyTexture(m_pTextTextureScore);
+	SDL_DestroyTexture(m_pTextTextureLevel);
+
+
 	SDL_RenderPresent(m_pRenderer);
 
 
