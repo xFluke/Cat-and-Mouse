@@ -1,4 +1,2 @@
-﻿  Game.cpp
-e:\michael\documents\george brown\second semester\game 1014 game production ii\github\cat-and-mouse\src\game.cpp(116): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-e:\michael\documents\george brown\second semester\game 1014 game production ii\github\cat-and-mouse\src\game.cpp(132): warning C4805: '==': unsafe mix of type 'const Uint8' and type 'bool' in operation
-  Cat and Mouse.vcxproj -> E:\Michael\Documents\George Brown\Second Semester\Game 1014 Game Production II\GitHub\Cat-and-Mouse\bin\Debug\Cat and Mouse.exe
+﻿  Main.cpp
+  Cat and Mouse.vcxproj -> C:\Users\Miko Man\Desktop\Cat-and-Mouse-master (2)\Cat-and-Mouse-master\bin\Debug\Cat and Mouse.exe
