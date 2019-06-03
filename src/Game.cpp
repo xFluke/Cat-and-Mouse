@@ -15,6 +15,8 @@
 
 Game::Game() {
 	m_fps = (Uint32)round(1 / (long double)FPS * 1000);
+
+
 }
 
 bool Game::Init(const char* title, int xpos, int ypos, int width, int height, int flags) {
@@ -42,8 +44,24 @@ bool Game::Init(const char* title, int xpos, int ypos, int width, int height, in
 					SDL_FreeSurface(playerSurface);
 					SDL_FreeSurface(ghostsSurface);
 					std::cout << "Pixel maps creation success!" << std::endl;
+
+					if (TTF_Init() == 0) //initialize ttf
+					{
+						
+						m_pFont = TTF_OpenFont("../Assets/Fonts/junegull.ttf", 24);
+
+						std::cout << "Font creation success!" << std::endl;
+
+					}
+					else
+					{
+						std::cout << "TTF init fail!" << std::endl;
+						return false; //ttf init fail
+					}
+
 				}
 				else {
+					std::cout << "Image init fail!" << std::endl;
 					return 1; // Image init fail
 				}
 			}
@@ -204,7 +222,8 @@ void Game::HandlePlayerAbilities()
 }
 
 
-void Game::PlayerCatsInteractions() {
+void Game::PlayerCatsInteractions() 
+{
 	// Handles player eating a cat
 	for (int i = 0; i < 4; i++) {
 		// If player collides with cat..
@@ -215,12 +234,17 @@ void Game::PlayerCatsInteractions() {
 				if (m_pPlayer->GetAbility() == Ability::DEFEAT_CATS)
 				{
 					m_pCats[i]->Die();
+					m_scoreNum += 100;
 				}
 				// Else player dies
 				else
 				{
 					m_pPlayer->Die();
-					m_bRunning = false;
+					m_livesNum -= 1;
+					if (m_livesNum == 0)
+					{
+						m_bRunning = false;
+					}
 				}
 			}
 		}
@@ -235,6 +259,7 @@ void Game::PlayerMovements() {
 		// Change tile to a normal blank tile with its associated variables
 		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetSrc('B');
 		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetTileVariables('B');
+		m_scoreNum += 10;
 	}
 
 	// Handles player eating a mystery cheese
@@ -243,6 +268,7 @@ void Game::PlayerMovements() {
 		// Change tile to a normal blank tile with its associated variables
 		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetSrc('B');
 		m_level.m_Map[m_pPlayer->GetY()][m_pPlayer->GetX()].SetTileVariables('B');
+		m_scoreNum += 20;
 
 		// Grant player a random ability and start the timer
 		m_powerUpStartTimer = SDL_GetTicks();
@@ -524,7 +550,41 @@ void Game::Render() {
 	// Render player
 	SDL_RenderCopyEx(m_pRenderer, m_pPlayerTexture, m_pPlayer->GetSrcP(), m_pPlayer->GetDstP(),m_pPlayer->GetPlayerAngle(),&m_pPlayer->center,SDL_FLIP_NONE);
 
+
+	//render text
+
+
+	//lives text creation
+	m_fontTextLives = "Lives: " + std::to_string(m_livesNum);
+	m_pTextSurfaceLives = TTF_RenderText_Solid(m_pFont, m_fontTextLives.c_str(), m_colour);
+	m_pTextTextureLives = SDL_CreateTextureFromSurface(m_pRenderer, m_pTextSurfaceLives);
+	SDL_FreeSurface(m_pTextSurfaceLives);
+	SDL_QueryTexture(m_pTextTextureLives, NULL, NULL, &m_textRectLives.w, &m_textRectLives.h);
+
+
+	//level text creation
+	m_fontTextLevel = "Level: " + std::to_string(m_levelNum);
+	m_pTextSurfaceLevel = TTF_RenderText_Solid(m_pFont, m_fontTextLevel.c_str(), m_colour);
+	m_pTextTextureLevel = SDL_CreateTextureFromSurface(m_pRenderer, m_pTextSurfaceLevel);
+	SDL_FreeSurface(m_pTextSurfaceLevel);
+	SDL_QueryTexture(m_pTextTextureLevel, NULL, NULL, &m_textRectLevel.w, &m_textRectLevel.h);
+
+	//score text creation
+	m_fontTextScore = "Score: " + std::to_string(m_scoreNum);
+	m_pTextSurfaceScore = TTF_RenderText_Solid(m_pFont, m_fontTextScore.c_str(), m_colour);
+	m_pTextTextureScore = SDL_CreateTextureFromSurface(m_pRenderer, m_pTextSurfaceScore);
+	SDL_FreeSurface(m_pTextSurfaceScore);
+	SDL_QueryTexture(m_pTextTextureScore, NULL, NULL, &m_textRectScore.w, &m_textRectScore.h);
+
+
+	//render out the texts
+	SDL_RenderCopy(m_pRenderer, m_pTextTextureLives, NULL, &m_textRectLives);
+	SDL_RenderCopy(m_pRenderer, m_pTextTextureLevel, NULL, &m_textRectLevel);
+	SDL_RenderCopy(m_pRenderer, m_pTextTextureScore, NULL, &m_textRectScore);
+
 	SDL_RenderPresent(m_pRenderer);
+
+
 }
 
 void Game::HandleEvents() {
@@ -552,11 +612,17 @@ void Game::Sleep() {
 
 void Game::Clean() {
 	std::cout << "Cleaning game. Bye!" << std::endl;
+	TTF_CloseFont(m_pFont);
+	m_pFont = NULL;
+	SDL_DestroyTexture(m_pTextTextureLives);
+	SDL_DestroyTexture(m_pTextTextureScore);
+	SDL_DestroyTexture(m_pTextTextureLevel);
 	SDL_DestroyTexture(m_pTileTexture);
 	SDL_DestroyTexture(m_pPlayerTexture);
 	SDL_DestroyWindow(m_pWindow);
 	SDL_DestroyRenderer(m_pRenderer);
 	IMG_Quit();
+	TTF_Quit();
 	SDL_Quit();
 }
 

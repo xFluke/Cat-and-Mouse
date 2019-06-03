@@ -1,3 +1,6 @@
 ﻿  Game.cpp
-c:\users\101193122\desktop\prototype_cat-an-mouse_may14thbuild here\prototype_cat-an-mouse_may14thbuild\src\game.cpp(109): warning C4805: '==': unsafe mix of type 'const Uint8' and type 'bool' in operation
-  Cat and Mouse.vcxproj -> C:\Users\101193122\Desktop\Prototype_Cat-an-Mouse_May14thBuild HERE\Prototype_Cat-an-Mouse_May14thBuild\bin\Debug\Cat and Mouse.exe
+e:\michael\documents\george brown\second semester\game 1014 game production ii\github\cat-and-mouse\src\game.cpp(116): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+e:\michael\documents\george brown\second semester\game 1014 game production ii\github\cat-and-mouse\src\game.cpp(132): warning C4805: '==': unsafe mix of type 'const Uint8' and type 'bool' in operation
+  main.cpp
+  Generating Code...
+  Cat and Mouse.vcxproj -> E:\Michael\Documents\George Brown\Second Semester\Game 1014 Game Production II\GitHub\Cat-and-Mouse\bin\Debug\Cat and Mouse.exe

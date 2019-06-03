@@ -1,9 +1,11 @@
 #pragma once
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include "Player.h"
 #include "Cat.h"
 #include "Level.h"
+#include <string>
 #define FPS 60
 
 class Game {
@@ -22,6 +24,35 @@ private:
 	SDL_Texture* m_pPlayerTexture;
 	SDL_Texture* m_pGhostsTexture;
 
+
+	//Scoring and level Tracking
+	int m_scoreNum = 0;
+	int m_levelNum = 1;
+	int m_livesNum = 3;
+
+	//font
+	TTF_Font* m_pFont;
+	SDL_Color m_colour = { 255,255,255 };
+
+	//Lives font
+	std::string m_fontTextLives;
+	SDL_Surface* m_pTextSurfaceLives;
+	SDL_Texture* m_pTextTextureLives;
+	SDL_Rect m_textRectLives = { 10,10 };
+
+
+	//Level
+	std::string m_fontTextLevel;
+	SDL_Surface* m_pTextSurfaceLevel;
+	SDL_Texture* m_pTextTextureLevel;
+	SDL_Rect m_textRectLevel = { 440,10 };;
+
+	//Score
+	std::string m_fontTextScore;
+	SDL_Surface* m_pTextSurfaceScore;
+	SDL_Texture* m_pTextTextureScore;
+	SDL_Rect m_textRectScore = { 850,10 }; ;
+
 	// Game Object Variables
 	Player* m_pPlayer; // Point to Player object
 	Cat* m_pCats[4];
@@ -30,6 +61,8 @@ private:
 	int m_currLevel = 0;
 	Level m_level;
 	Level m_bg;
+	
+
 	
 	
 

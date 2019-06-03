@@ -23,6 +23,7 @@
     <ClInclude Include="..\src\Game.h" />
     <ClInclude Include="..\src\Level.h" />
     <ClInclude Include="..\src\Player.h" />
+    <ClInclude Include="..\src\PowerUp.h" />
     <ClInclude Include="..\src\Sprite.h" />
     <ClInclude Include="..\src\Tile.h" />
   </ItemGroup>
@@ -31,6 +32,7 @@
     <ClCompile Include="..\src\Game.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Player.cpp" />
+    <ClCompile Include="..\src\PowerUp.cpp" />
     <ClCompile Include="..\src\Sprite.cpp" />
     <ClCompile Include="..\src\Tile.cpp" />
   </ItemGroup>
@@ -42,7 +44,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{056A63E3-0205-4D30-A0A7-3170A2399630}</ProjectGuid>
     <RootNamespace>CatandMouse</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -105,7 +107,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut_static.lib;DevIL.lib;ILU.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut_static.lib;DevIL.lib;ILU.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
