@@ -39,7 +39,9 @@ public:
 		static Game* instance = new Game();
 		return instance;
 	}
-	
+	Player* GetPlayer();
+	Level* GetLevel();
+
 	bool Init(const char* title, int xpos, int ypos, int width, int height, int flags);
 	bool Running() { return m_bRunning; }
 	void Update();
