@@ -14,7 +14,7 @@ using namespace std;
 class SDL_Manager // Manages init and quit
 {
 private:
-    bool m_bRunning;
+    
 
     SDL_Window* m_pWindow;
     SDL_Renderer* m_pRenderer;
@@ -22,6 +22,7 @@ private:
     SDL_Manager();
 
 public:
+	bool m_bRunning;
 
     static SDL_Manager* GetInstance();
 

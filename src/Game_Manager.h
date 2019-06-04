@@ -22,13 +22,15 @@ enum Levels
 class Game_Manager
 {
 private:
-    bool m_bRunning;
+    
     unsigned short m_iCurrentLevel;
     Uint32 m_start, m_end, m_delta, m_fps; //  m_powerUpStartTimer;	 
     
     
 	
 public:
+	bool m_bRunning;
+
     Game_Manager();
     //static Game_Manager* GetInstance();
 

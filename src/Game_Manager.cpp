@@ -16,7 +16,7 @@ Game_Manager* Game_Manager::GetInstance()
     return instance;
 }
 */
-void Game_Manager::Start ()
+void Game_Manager::Start()
 {
     if (m_iCurrentLevel == ONE)
     {
